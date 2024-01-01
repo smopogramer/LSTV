@@ -1,0 +1,82 @@
+CREATE TABLE employeefile (
+    recid INT PRIMARY KEY AUTO_INCREMENT,
+    empcode INT UNIQUE,
+    empname VARCHAR(55),
+    birthdate DATE,
+    status VARCHAR(55),
+    gender VARCHAR(55),
+    salary FLOAT
+);
+INSERT INTO `employeefile` (`empcode`, `empname`, `birthdate`, `status`, `gender`, `salary`) 
+                    VALUES ('0005', 'manuel gonzaga', '11/17/1950', 'married', 'male', '10000'),
+                            ('0006', 'eijay gonzaga', '10/14/1950', 'single', 'male', '5000'),
+                            ('0007', 'gelo gonzaga', '10/18/1950', 'single', 'male', '18000');
+
+1.
+SELECT * FROM employeefile 
+ORDER BY empname DESC;
+
+2.
+SELECT empcode, empname, birthdate
+FROM employeefile
+WHERE empname LIKE 'A%';
+
+--PS. if needed, SUBSTRING_INDEX(empname, ' ', 1) AS first_name,
+--     SUBSTRING_INDEX(empname, ' ', -1) AS last_name,
+
+3.
+SELECT SUBSTRING_INDEX(empname, ' ', 1) AS first_name, 
+        SUBSTRING_INDEX(empname, ' ', -1) AS last_name,
+        empcode,
+        birthdate
+FROM employeefile
+WHERE last_name LIKE '%Cruz';
+
+4. 
+SELECT * FROM employeefile
+    WHERE salary BETWEEN 19000 AND 20000;
+
+5.
+SELECT * FROM employeefile
+WHERE YEAR(birthdate) = 1999;
+
+6.
+CREATE TABLE gender_count(
+    gender VARCHAR(50),
+    count INT
+);
+INSERT INTO gender_count (gender, count)
+SELECT gender, COUNT(*) AS count
+from employeefile
+GROUP BY gender;
+
+SELECT *
+FROM gender_count;
+
+7.
+CREATE TABLE salary_status(
+    status VARCHAR(50),
+    total_salary FLOAT
+);
+INSERT INTO salary_status (status, total_salary)
+SELECT status, SUM(salary) AS total_salary
+FROM employeefile
+GROUP BY status;
+
+SELECT * FROM salary_status;
+
+8.
+SELECT * FROM employeefile
+WHERE salary = (SELECT MAX(salary) FROM employeefile);
+
+9.
+UPDATE employeefile
+SET salary = salary + 500
+WHERE status = 'married';
+
+SELECT * FROM employeefile;
+
+10.
+INSERT INTO `employeefile` (`empcode`, `empname`, `birthdate`, `status`, `gender`, `salary`) VALUES ('0007', 'pauline cruz', '11/17/1950', 'single', 'female', '17000');
+
+
